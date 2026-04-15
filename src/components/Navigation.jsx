@@ -17,9 +17,13 @@ export default function Navigation({ currentPage, setCurrentPage }) {
 
       <button
         onClick={() => setCurrentPage('new')}
-        className="flex-1 p-4 flex flex-col items-center gap-1 text-gray-500 hover:text-gray-700"
+        className={`flex-1 p-4 flex flex-col items-center gap-1 ${
+          currentPage === 'new'
+            ? 'text-blue-600'
+            : 'text-gray-500 hover:text-gray-700'
+        }`}
       >
-        <div className="bg-blue-600 text-white p-2 rounded-full -mt-6">
+        <div className="bg-blue-600 text-white p-2 rounded-full -mt-6 shadow-lg">
           <Plus size={24} />
         </div>
         <span className="text-xs">Nova</span>

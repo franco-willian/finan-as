@@ -11,21 +11,27 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  console.log('App renderizando:', { currentPage, transacoes, isLoading, error })
+
   useEffect(() => {
+    console.log('useEffect executado')
     fetchTransactions()
   }, [])
 
   const fetchTransactions = async () => {
     try {
+      console.log('Iniciando fetchTransactions')
       setIsLoading(true)
       const response = await fetch('/api/transactions')
+      console.log('Resposta recebida:', response.status)
       if (!response.ok) {
         throw new Error('Erro ao carregar transações')
       }
       const data = await response.json()
+      console.log('Dados recebidos:', data)
       setTransacoes(data)
     } catch (err) {
-      console.error(err)
+      console.error('Erro em fetchTransactions:', err)
       setError('Não foi possível carregar as transações')
     } finally {
       setIsLoading(false)

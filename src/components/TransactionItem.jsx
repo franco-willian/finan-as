@@ -3,6 +3,9 @@ export default function TransactionItem({ transacao, icone }) {
   const corTexto = isReceita ? 'text-green-600' : 'text-red-600'
   const corIcone = isReceita ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
 
+  const valorNumerico = typeof transacao.valor === 'string' ? parseFloat(transacao.valor) : transacao.valor
+  const valorFormatado = isNaN(valorNumerico) ? '0.00' : Math.abs(valorNumerico).toFixed(2)
+
   const formatarData = (dataString) => {
     const data = new Date(dataString)
     return data.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' })
@@ -19,10 +22,10 @@ export default function TransactionItem({ transacao, icone }) {
           <p className="text-sm text-gray-500">{transacao.categoria}</p>
         </div>
       </div>
-      
+
       <div className="text-right">
         <p className={`font-bold text-lg ${corTexto}`}>
-          {isReceita ? '+' : ''} R$ {Math.abs(transacao.valor).toFixed(2)}
+          {isReceita ? '+' : ''} R$ {valorFormatado}
         </p>
         <p className="text-xs text-gray-400">{formatarData(transacao.data)}</p>
       </div>

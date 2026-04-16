@@ -3,19 +3,23 @@ import BalanceCard from './BalanceCard'
 import TransactionList from './TransactionList'
 
 export default function Dashboard({ transacoes, onAddClick, isLoading, error }) {
+  console.log('Dashboard renderizando:', { transacoes, isLoading, error })
+
   const receitas = transacoes
     .filter(item => item.tipo === 'receita')
-    .reduce((sum, item) => sum + item.valor, 0)
+    .reduce((sum, item) => sum + (typeof item.valor === 'string' ? parseFloat(item.valor) : item.valor), 0)
 
   const despesas = transacoes
     .filter(item => item.tipo === 'despesa')
-    .reduce((sum, item) => sum + Math.abs(item.valor), 0)
+    .reduce((sum, item) => sum + Math.abs(typeof item.valor === 'string' ? parseFloat(item.valor) : item.valor), 0)
 
-  const saldo = transacoes.reduce((sum, item) => sum + item.valor, 0)
+  const saldo = transacoes.reduce((sum, item) => sum + (typeof item.valor === 'string' ? parseFloat(item.valor) : item.valor), 0)
 
   const ultimasTransacoes = [...transacoes]
     .sort((a, b) => new Date(b.data) - new Date(a.data))
     .slice(0, 5)
+
+  console.log('Cálculos:', { receitas, despesas, saldo, ultimasTransacoes })
 
   if (isLoading) {
     return (

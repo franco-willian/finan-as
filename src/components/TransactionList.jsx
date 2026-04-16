@@ -11,12 +11,22 @@ const iconesPorCategoria = {
   'Compras': <ShoppingCart size={20} />,
 }
 
-export default function TransactionList({ transacoes }) {
+export default function TransactionList({ transacoes, showAll = false }) {
+  const transacoesParaMostrar = showAll ? transacoes : transacoes.slice(0, 5)
+
+  if (transacoesParaMostrar.length === 0) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <p>Nenhuma transação encontrada</p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-2">
-      {transacoes.map(transacao => (
-        <TransactionItem 
-          key={transacao.id} 
+      {transacoesParaMostrar.map(transacao => (
+        <TransactionItem
+          key={transacao.id}
           transacao={transacao}
           icone={iconesPorCategoria[transacao.categoria]}
         />

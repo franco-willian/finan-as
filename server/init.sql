@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS financas CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE financas;
+
+CREATE TABLE IF NOT EXISTS transactions (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  titulo VARCHAR(255) NOT NULL,
+  valor DECIMAL(12,2) NOT NULL,
+  tipo ENUM('receita', 'despesa') NOT NULL,
+  categoria VARCHAR(100) NOT NULL,
+  data DATE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

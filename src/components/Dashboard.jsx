@@ -2,7 +2,7 @@
 import BalanceCard from './BalanceCard'
 import TransactionList from './TransactionList'
 
-export default function Dashboard({ transacoes, onAddClick }) {
+export default function Dashboard({ transacoes, onAddClick, isLoading, error }) {
   const receitas = transacoes
     .filter(item => item.tipo === 'receita')
     .reduce((sum, item) => sum + item.valor, 0)
@@ -16,6 +16,22 @@ export default function Dashboard({ transacoes, onAddClick }) {
   const ultimasTransacoes = [...transacoes]
     .sort((a, b) => new Date(b.data) - new Date(a.data))
     .slice(0, 5)
+
+  if (isLoading) {
+    return (
+      <div className="p-4 max-w-6xl mx-auto text-center text-gray-600">
+        Carregando transações...
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-4 max-w-6xl mx-auto text-center text-red-600">
+        {error}
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto">

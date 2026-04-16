@@ -1,8 +1,9 @@
  import { TrendingUp, TrendingDown, Plus } from 'lucide-react'
 import BalanceCard from './BalanceCard'
 import TransactionList from './TransactionList'
+import { formatCurrency } from '../utils/formatCurrency'
 
-export default function Dashboard({ transacoes, onAddClick, isLoading, error }) {
+export default function Dashboard({ transacoes, onAddClick, isLoading, error, onEdit, onDelete }) {
   console.log('Dashboard renderizando:', { transacoes, isLoading, error })
 
   const receitas = transacoes
@@ -46,7 +47,7 @@ export default function Dashboard({ transacoes, onAddClick, isLoading, error }) 
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Receitas</p>
-              <p className="text-2xl font-bold text-green-600">R$ {receitas.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-green-600">{formatCurrency(receitas)}</p>
             </div>
             <div className="bg-green-100 p-3 rounded-lg">
               <TrendingUp className="text-green-600" size={28} />
@@ -58,7 +59,7 @@ export default function Dashboard({ transacoes, onAddClick, isLoading, error }) 
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Despesas</p>
-              <p className="text-2xl font-bold text-red-600">R$ {despesas.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-red-600">{formatCurrency(despesas)}</p>
             </div>
             <div className="bg-red-100 p-3 rounded-lg">
               <TrendingDown className="text-red-600" size={28} />
@@ -84,4 +85,4 @@ export default function Dashboard({ transacoes, onAddClick, isLoading, error }) 
       </div>
     </div>
   )
-}
+}

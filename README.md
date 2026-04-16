@@ -84,8 +84,9 @@ O Vite está configurado para enviar `/api` para `http://localhost:4000`.
 - `GET /api/transactions` - lista transações
 - `POST /api/transactions` - cria nova transação
 - `GET /api/balance` - retorna saldo, receitas e despesas
+- `PUT /api/transactions/:id` - atualiza uma transação existente
+- `DELETE /api/transactions/:id` - exclui uma transação
 
 ## Deploy
 
 No servidor você pode rodar o backend em `4000` e usar Nginx para servir o frontend e fazer proxy de `/api` para o backend.
-

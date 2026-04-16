@@ -1,8 +1,9 @@
 import { Receipt, Filter, Search, ArrowUpDown } from 'lucide-react'
 import { useState } from 'react'
 import TransactionList from './TransactionList'
+import { formatCurrency } from '../utils/formatCurrency'
 
-export default function Transactions({ transacoes }) {
+export default function Transactions({ transacoes, onEdit, onDelete }) {
   const [filtro, setFiltro] = useState('todas')
   const [busca, setBusca] = useState('')
   const [ordenacao, setOrdenacao] = useState('data-desc')
@@ -16,7 +17,7 @@ export default function Transactions({ transacoes }) {
 
   if (busca) {
     transacoesFiltradas = transacoesFiltradas.filter(t =>
-      t.descricao.toLowerCase().includes(busca.toLowerCase()) ||
+      t.titulo.toLowerCase().includes(busca.toLowerCase()) ||
       (t.categoria && t.categoria.toLowerCase().includes(busca.toLowerCase()))
     )
   }
@@ -53,7 +54,7 @@ export default function Transactions({ transacoes }) {
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-600">Valor total:</span>
           <span className={`font-bold ${totalFiltrado >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            R$ {totalFiltrado.toFixed(2)}
+            {formatCurrency(totalFiltrado)}
           </span>
         </div>
       </div>
@@ -99,7 +100,7 @@ export default function Transactions({ transacoes }) {
 
       {/* Lista de Transações */}
       <div className="bg-white rounded-lg shadow-sm">
-        <TransactionList transacoes={transacoesFiltradas} showAll={true} />
+        <TransactionList transacoes={transacoesFiltradas} showAll={true} onEdit={onEdit} onDelete={onDelete} />
       </div>
 
       {transacoesFiltradas.length === 0 && (

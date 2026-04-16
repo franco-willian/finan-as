@@ -1,4 +1,6 @@
-import { Wallet, Plus, TrendingUp, TrendingDown } from 'lucide-react'
+import { Wallet, Building, PiggyBank, MoreHorizontal, Plus, TrendingUp, TrendingDown } from 'lucide-react'
+import { useState } from 'react'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export default function Accounts() {
   // Dados mockados para contas - em uma aplicação real, isso viria do backend
@@ -52,7 +54,7 @@ export default function Accounts() {
           <div>
             <p className="text-sm text-gray-600">Patrimônio Total</p>
             <p className={`text-2xl font-bold ${totalAtivos >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              R$ {totalAtivos.toFixed(2)}
+              {formatCurrency(totalAtivos)}
             </p>
           </div>
           <div className={`p-3 rounded-lg ${totalAtivos >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
@@ -80,11 +82,11 @@ export default function Accounts() {
               </div>
               <div className="text-right">
                 <p className={`font-bold ${conta.saldo >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  R$ {conta.saldo.toFixed(2)}
+                  {formatCurrency(conta.saldo)}
                 </p>
                 {conta.limite && (
                   <p className="text-xs text-gray-500">
-                    Limite: R$ {conta.limite.toFixed(2)}
+                    Limite: {formatCurrency(conta.limite)}
                   </p>
                 )}
               </div>

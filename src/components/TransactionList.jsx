@@ -11,7 +11,7 @@ const iconesPorCategoria = {
   'Compras': <ShoppingCart size={20} />,
 }
 
-export default function TransactionList({ transacoes, showAll = false }) {
+export default function TransactionList({ transacoes, showAll = false, onEdit, onDelete }) {
   const transacoesParaMostrar = showAll ? transacoes : transacoes.slice(0, 5)
 
   if (transacoesParaMostrar.length === 0) {
@@ -29,6 +29,8 @@ export default function TransactionList({ transacoes, showAll = false }) {
           key={transacao.id}
           transacao={transacao}
           icone={iconesPorCategoria[transacao.categoria]}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
     </div>

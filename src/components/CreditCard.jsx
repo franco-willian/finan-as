@@ -1,4 +1,6 @@
+import React, { useState } from 'react'
 import { CreditCard, Plus, Calendar, DollarSign, AlertTriangle } from 'lucide-react'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export default function CreditCardPage() {
   // Dados mockados para cartões de crédito
@@ -64,8 +66,8 @@ export default function CreditCardPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Limite Total</p>
-              <p className="text-xl font-bold text-gray-900">
-                R$ {cartoes.reduce((sum, c) => sum + c.limite, 0).toFixed(2)}
+              <p className="text-2xl font-bold text-gray-900">
+                {formatCurrency(cartoes.reduce((sum, c) => sum + c.limite, 0))}
               </p>
             </div>
             <CreditCard className="text-blue-600" size={24} />
@@ -75,9 +77,9 @@ export default function CreditCardPage() {
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Utilizado</p>
-              <p className="text-xl font-bold text-red-600">
-                R$ {cartoes.reduce((sum, c) => sum + c.utilizado, 0).toFixed(2)}
+              <p className="text-sm text-gray-600">Total Utilizado</p>
+              <p className="text-2xl font-bold text-blue-600">
+                {formatCurrency(cartoes.reduce((sum, c) => sum + c.utilizado, 0))}
               </p>
             </div>
             <DollarSign className="text-red-600" size={24} />
@@ -87,9 +89,9 @@ export default function CreditCardPage() {
         <div className="bg-white rounded-lg p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">Disponível</p>
-              <p className="text-xl font-bold text-green-600">
-                R$ {(cartoes.reduce((sum, c) => sum + c.limite, 0) - cartoes.reduce((sum, c) => sum + c.utilizado, 0)).toFixed(2)}
+              <p className="text-sm text-gray-600">Limite Disponível</p>
+              <p className="text-2xl font-bold text-green-600">
+                {formatCurrency(cartoes.reduce((sum, c) => sum + c.limite, 0) - cartoes.reduce((sum, c) => sum + c.utilizado, 0))}
               </p>
             </div>
             <AlertTriangle className="text-green-600" size={24} />
@@ -130,9 +132,9 @@ export default function CreditCardPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-between text-sm">
-                  <span>R$ {cartao.utilizado.toFixed(2)} / R$ {cartao.limite.toFixed(2)}</span>
-                  <span>Disponível: R$ {(cartao.limite - cartao.utilizado).toFixed(2)}</span>
+                <div className="flex justify-between text-xs text-gray-200 mt-2">
+                  <span>{formatCurrency(cartao.utilizado)} / {formatCurrency(cartao.limite)}</span>
+                  <span>Disponível: {formatCurrency(cartao.limite - cartao.utilizado)}</span>
                 </div>
               </div>
             )
@@ -155,8 +157,8 @@ export default function CreditCardPage() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-red-600">R$ {fatura.valor.toFixed(2)}</p>
-                  <p className="text-xs text-gray-500">{fatura.status}</p>
+                  <p className="font-bold text-red-600">{formatCurrency(fatura.valor)}</p>
+                  <p className="text-xs text-gray-400">Venc: {fatura.vencimento}</p>
                 </div>
               </div>
             </div>

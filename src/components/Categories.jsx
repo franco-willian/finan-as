@@ -1,4 +1,5 @@
 import { PieChart, TrendingUp, TrendingDown } from 'lucide-react'
+import { formatCurrency } from '../utils/formatCurrency'
 
 export default function Categories({ transacoes }) {
   // Agrupar transações por categoria
@@ -53,7 +54,7 @@ export default function Categories({ transacoes }) {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-gray-600">Total</span>
                 <span className={`font-bold ${categoria.total >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  R$ {categoria.total.toFixed(2)}
+                  {formatCurrency(categoria.total)}
                 </span>
               </div>
 
@@ -65,8 +66,8 @@ export default function Categories({ transacoes }) {
               </div>
 
               <div className="flex justify-between text-xs text-gray-500">
-                <span>Receitas: R$ {categoria.receitas.toFixed(2)}</span>
-                <span>Despesas: R$ {categoria.despesas.toFixed(2)}</span>
+                <span>Receitas: {formatCurrency(categoria.receitas)}</span>
+                <span>Despesas: {formatCurrency(categoria.despesas)}</span>
               </div>
             </div>
           )

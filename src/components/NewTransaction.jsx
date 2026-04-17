@@ -1,18 +1,7 @@
 import { useEffect, useState } from 'react'
 
-const categorias = [
-  'Salário',
-  'Alimentação',
-  'Entretenimento',
-  'Saúde',
-  'Transporte',
-  'Renda Extra',
-  'Compras',
-  'Transferência',
-  'Despesa cartão',
-]
-
-export default function NewTransaction({ addTransaction, defaultTipo, defaultCategoria, editingTransaction, onUpdate, onCancel }) {
+export default function NewTransaction({ categoriasList, addTransaction, defaultTipo, defaultCategoria, editingTransaction, onUpdate, onCancel }) {
+  const nomesCategorias = categoriasList?.length > 0 ? categoriasList.map(c => c.nome) : ['Geral']
   const formatarDataInput = (dataStr) => {
     if (!dataStr) return new Date().toISOString().slice(0, 10);
     return dataStr.includes('T') ? dataStr.substring(0, 10) : dataStr;
@@ -21,7 +10,7 @@ export default function NewTransaction({ addTransaction, defaultTipo, defaultCat
   const [titulo, setTitulo] = useState(editingTransaction?.titulo || '')
   const [valor, setValor] = useState(editingTransaction ? Math.abs(editingTransaction.valor).toString() : '')
   const [tipo, setTipo] = useState(editingTransaction?.tipo || defaultTipo || 'despesa')
-  const [categoria, setCategoria] = useState(editingTransaction?.categoria || defaultCategoria || categorias[0])
+  const [categoria, setCategoria] = useState(editingTransaction?.categoria || defaultCategoria || nomesCategorias[0] || '')
   const [data, setData] = useState(editingTransaction?.data ? formatarDataInput(editingTransaction.data) : new Date().toISOString().slice(0, 10))
 
   useEffect(() => {
@@ -29,7 +18,7 @@ export default function NewTransaction({ addTransaction, defaultTipo, defaultCat
       setTitulo(editingTransaction.titulo || '')
       setValor(Math.abs(editingTransaction.valor).toString())
       setTipo(editingTransaction.tipo || defaultTipo || 'despesa')
-      setCategoria(editingTransaction.categoria || defaultCategoria || categorias[0])
+      setCategoria(editingTransaction.categoria || defaultCategoria || nomesCategorias[0] || '')
       setData(editingTransaction.data ? formatarDataInput(editingTransaction.data) : new Date().toISOString().slice(0, 10))
     } else {
       if (defaultTipo) {
@@ -70,7 +59,7 @@ export default function NewTransaction({ addTransaction, defaultTipo, defaultCat
     setTitulo('')
     setValor('')
     setTipo('despesa')
-    setCategoria(categorias[0])
+    setCategoria(nomesCategorias[0] || '')
     setData(new Date().toISOString().slice(0, 10))
   }
 
@@ -126,7 +115,7 @@ export default function NewTransaction({ addTransaction, defaultTipo, defaultCat
                 onChange={(event) => setCategoria(event.target.value)}
                 className="w-full rounded-xl border border-gray-200 px-4 py-3 focus:border-blue-500 focus:outline-none"
               >
-                {categorias.map((item) => (
+                {nomesCategorias.map((item) => (
                   <option key={item} value={item}>{item}</option>
                 ))}
               </select>

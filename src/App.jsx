@@ -8,10 +8,16 @@ import Categories from './components/Categories'
 import Accounts from './components/Accounts'
 import Transactions from './components/Transactions'
 import CreditCard from './components/CreditCard'
+import Login from './components/Login'
+import Register from './components/Register'
+import { useAuth } from './contexts/AuthContext'
 
 function App() {
+  const { token, logout } = useAuth()
+  const [showRegister, setShowRegister] = useState(false)
   const [currentPage, setCurrentPage] = useState('dashboard')
   const [transacoes, setTransacoes] = useState([])
+  const [categorias, setCategorias] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false)
@@ -25,9 +31,11 @@ function App() {
   console.log('App renderizando:', { currentPage, transacoes, isLoading, error, isActionMenuOpen, newTransactionTipo, newTransactionCategoria, returnPage, notification, highlightedTransactionId })
 
   useEffect(() => {
-    console.log('useEffect executado')
-    fetchTransactions()
-  }, [])
+    if (token) {
+      fetchTransactions()
+      fetchCategories()
+    }
+  }, [token])
 
   useEffect(() => {
     if (!notification && !highlightedTransactionId) return
@@ -42,11 +50,12 @@ function App() {
 
   const fetchTransactions = async () => {
     try {
-      console.log('Iniciando fetchTransactions')
       setIsLoading(true)
-      const response = await fetch('/api/transactions')
-      console.log('Resposta recebida:', response.status)
+      const response = await fetch('/api/transactions', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
       if (!response.ok) {
+        if (response.status === 401 || response.status === 403) logout();
         throw new Error('Erro ao carregar transações')
       }
       const data = await response.json()
@@ -60,17 +69,71 @@ function App() {
     }
   }
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (response.ok) {
+        const data = await response.json()
+        setCategorias(data)
+      }
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const handleAddCategory = async (nome) => {
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ nome })
+      })
+      if (res.ok) fetchCategories()
+    } catch (err) { console.error(err) }
+  }
+
+  const handleEditCategory = async (oldName, newName) => {
+    try {
+      const res = await fetch(`/api/categories/${encodeURIComponent(oldName)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ nome: newName })
+      })
+      if (res.ok) {
+        fetchTransactions()
+        fetchCategories()
+      }
+    } catch (err) { console.error(err) }
+  }
+
+  const handleDeleteCategory = async (name) => {
+    try {
+      const res = await fetch(`/api/categories/${encodeURIComponent(name)}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      if (res.ok) {
+        fetchTransactions()
+        fetchCategories()
+      }
+    } catch (err) { console.error(err) }
+  }
+
   const addTransaction = async (transaction) => {
     try {
       const response = await fetch('/api/transactions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(transaction),
       })
 
       if (!response.ok) {
+        if (response.status === 401 || response.status === 403) logout();
         throw new Error('Erro ao salvar transação')
       }
 
@@ -90,11 +153,13 @@ function App() {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(transaction),
       })
 
       if (!response.ok) {
+        if (response.status === 401 || response.status === 403) logout();
         throw new Error('Erro ao atualizar transação')
       }
 
@@ -111,13 +176,14 @@ function App() {
   }
 
   const deleteTransaction = async (id) => {
-    console.log('deleteTransaction:', id)
     try {
       const response = await fetch(`/api/transactions/${id}`, {
         method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
       })
 
       if (!response.ok) {
+        if (response.status === 401 || response.status === 403) logout();
         throw new Error('Erro ao excluir transação')
       }
 
@@ -173,6 +239,11 @@ function App() {
               ? 'Cartão de Crédito'
               : 'Configurações'
 
+  if (!token) {
+    if (showRegister) return <Register switchToLogin={() => setShowRegister(false)} />
+    return <Login switchToRegister={() => setShowRegister(true)} />
+  }
+
   return (
     <div className="h-screen bg-gray-50 flex flex-col">
       <Header title={pageTitle} currentPage={currentPage} setCurrentPage={setCurrentPage} />
@@ -195,7 +266,15 @@ function App() {
           />
         )}
 
-        {currentPage === 'categories' && <Categories transacoes={transacoes} />}
+        {currentPage === 'categories' && (
+          <Categories 
+            transacoes={transacoes} 
+            categoriasList={categorias}
+            onAdd={handleAddCategory}
+            onEdit={handleEditCategory}
+            onDelete={handleDeleteCategory}
+          />
+        )}
         {currentPage === 'accounts' && <Accounts />}
         {currentPage === 'transactions' && (
           <Transactions
@@ -208,6 +287,7 @@ function App() {
 
         {currentPage === 'new' && (
           <NewTransaction
+            categoriasList={categorias}
             addTransaction={addTransaction}
             defaultTipo={newTransactionTipo}
             defaultCategoria={newTransactionCategoria}

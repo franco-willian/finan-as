@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Menu, ChevronDown, BarChart3, Tag, Wallet, Receipt, CreditCard } from 'lucide-react'
+import { Menu, ChevronDown, BarChart3, Tag, Wallet, Receipt, CreditCard, LogOut } from 'lucide-react'
+import { useAuth } from '../contexts/AuthContext'
 
 export default function Header({ title, currentPage, setCurrentPage }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const { logout, user } = useAuth()
 
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
@@ -22,7 +24,7 @@ export default function Header({ title, currentPage, setCurrentPage }) {
     <header className="bg-white shadow-sm sticky top-0 z-10">
       <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-500">Finanças Pessoais</p>
+          <p className="text-sm text-gray-500">Olá, {user?.username || 'Usuário'}</p>
           <h1 className="text-2xl font-bold text-gray-900">{title || 'Minhas Finanças'}</h1>
         </div>
 
@@ -55,6 +57,14 @@ export default function Header({ title, currentPage, setCurrentPage }) {
                   </button>
                 )
               })}
+              <div className="border-t border-gray-100 my-1"></div>
+              <button
+                onClick={() => { setIsDropdownOpen(false); logout(); }}
+                className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-red-50 transition-colors text-red-600"
+              >
+                <LogOut size={18} />
+                <span className="text-sm font-medium">Sair</span>
+              </button>
             </div>
           )}
         </div>
